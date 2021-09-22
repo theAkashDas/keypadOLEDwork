@@ -1,6 +1,18 @@
 ### Keypad OLED Project
 Use case :- Keypad will be used to give inputs, OLED will be used to show those inputs. Inputs will be of the ON OFF period of a relay.
 
+#### How to Use :-
+- A is for going to the next line
+- B is for viewing pressed number
+- C is for clear and reset
+- RED LED for power
+- White LED for Relay ON OFF
+- Blue LED will blink when there is an input - used for input confirmation.
+
+#### Conditions :- 
+- No. of digits should not exceed 4
+- Keypads should be firmly pressed or else input is not detected.
+
 #### 1.0.1 (code)
 - OLED I2C working
 - Keypad is working
@@ -24,6 +36,12 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - Deleted the unused part in the code.
 - Added some print commands in the code.
 - made a function for displaying data.
+
+#### 1.0.5 (code)
+- Added code to truncate digits when its exceeds 4.
+- Blue LED will blink during inputs.
+- Deleting specific area is working fine.
+- Will add * for starting and stopping the function
 
 
 

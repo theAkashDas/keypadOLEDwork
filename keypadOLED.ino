@@ -1,6 +1,6 @@
 //A is for going to the next line
 //B is for viewing pressed number
-//
+//C is for clear and reset
 //
 
 
@@ -13,6 +13,8 @@
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define KEY_LED       10
+#define RELAY_ON_OFF  12
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -56,6 +58,10 @@ void startupMessage()
 }
 void staticText()
 {
+  loop_count = 0;
+  current_loop = 0;
+  on_time = 0;
+  off_time = 0;
 
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -72,12 +78,25 @@ void staticText()
 
   display.display();
 }
+
+void initialValues()
+{
+  display.setCursor(90, 5);
+  display.print("0000");
+  display.setCursor(90, 20);
+  display.print("0000");
+  display.setCursor(90, 35);
+  display.print("0000");
+  display.setCursor(90, 50);
+  display.print("0000");
+  display.display();
+}
 void setup()
 {
   Serial.begin(115200);
 
-  pinMode(10, OUTPUT);
-  digitalWrite(10, HIGH);
+  pinMode(KEY_LED, OUTPUT);
+  digitalWrite(KEY_LED, LOW);
   pinMode(12, OUTPUT);
   digitalWrite(12, HIGH);
 
@@ -92,6 +111,7 @@ void setup()
   display.clearDisplay();
 
   staticText();
+  initialValues();
   //  delay(1000);
 }
 
@@ -101,6 +121,10 @@ void loop() {
 
   if (key)
   {
+    digitalWrite(KEY_LED, HIGH);
+    delay(50);
+    digitalWrite(KEY_LED, LOW);
+
     Serial.print("Key Pressed : ");
     Serial.println(key);
     switch (key)
@@ -113,6 +137,7 @@ void loop() {
 
           numString = String(pressedNumber);
           Serial.println(numString.length());
+          
           displayData(numString, 90, line);
           numString = "";
           pressedNumber = 0;
@@ -121,7 +146,7 @@ void loop() {
       case 'A':
         {
           //display.setCursor(90, line);
-          if (line != 15)
+          if (line != 50)
           {
             line = line + 15;
           }
@@ -140,15 +165,7 @@ void loop() {
           display.fillRect(80, 3, 35, 60, BLACK);
           display.display();
           delay(500);
-          display.setCursor(90, 5);
-          display.print("0000");
-          display.setCursor(90, 20);
-          display.print("0000");
-          display.setCursor(90, 35);
-          display.print("0000");
-          display.setCursor(90, 50);
-          display.print("0000");
-          display.display();
+          initialValues();
           line = 5;
           break;
         }
@@ -157,6 +174,14 @@ void loop() {
           number = number * 10 + (int)key;
           number = number - 48;
           pressedNumber = pressedNumber * 10 + number;
+          if((pressedNumber/10000) >= 1) //to truncate the last part of the numbers with more than 4 digit
+          {
+            Serial.print("Bef : ");
+            Serial.println(pressedNumber);
+            pressedNumber = pressedNumber/10;
+            Serial.print("After : ");
+            Serial.println(pressedNumber);            
+          }
           number = 0;
           break;
         }
@@ -168,7 +193,7 @@ void loop() {
 
 void displayData(String data, int x, int y)
 {
-  display.fillRect(80, (line - 2), 35, (line + 12), BLACK);
+  display.fillRect(80, (line - 2), 50, 10, BLACK); // fillRect( x , y , width , height, color)
   display.display();
 
   display.setTextSize(1);
