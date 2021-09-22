@@ -11,10 +11,12 @@
 #include <Keypad.h>
 
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define KEY_LED       10
-#define RELAY_ON_OFF  12
+#define SCREEN_WIDTH              128 // OLED display width, in pixels
+#define SCREEN_HEIGHT             64 // OLED display height, in pixels
+#define KEY_LED                   10
+#define RELAY_ON_OFF_LED          12
+#define RELAY_PIN                 A0
+
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -36,9 +38,11 @@ byte colPins[COLS] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 long last = 0;
-uint16_t number = 0, pressedNumber = 0, loop_count = 0, current_loop = 0, on_time = 0, off_time = 0;
-uint8_t line = 5;
-String numString = "";
+uint16_t number = 0, pressedNumber = 0, loop_count = 0, counter = 0, current_loop = 0, on_time = 0, off_time = 0;
+uint8_t line = 5, pinState = 0;
+String numString = "", counterString = "";
+bool startFunctioning = false;
+long lastMillis = 0;
 
 void startupMessage()
 {
@@ -90,16 +94,28 @@ void initialValues()
   display.setCursor(90, 50);
   display.print("0000");
   display.display();
+  lastMillis = 0;
+  numString = "";
+  pressedNumber = 0;
+  on_time = 0;
+  off_time = 0;
+  loop_count = 0;
+  current_loop = 0;
+}
+void pinSetup()
+{
+  pinMode(RELAY_PIN, OUTPUT);
+  digitalWrite(RELAY_PIN, LOW);
+  pinMode(KEY_LED, OUTPUT);
+  digitalWrite(KEY_LED, LOW);
+  pinMode(RELAY_ON_OFF_LED, OUTPUT);
+  digitalWrite(RELAY_ON_OFF_LED, HIGH);
 }
 void setup()
 {
   Serial.begin(115200);
 
-  pinMode(KEY_LED, OUTPUT);
-  digitalWrite(KEY_LED, LOW);
-  pinMode(12, OUTPUT);
-  digitalWrite(12, HIGH);
-
+  pinSetup();
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
     for (;;);
@@ -127,67 +143,132 @@ void loop() {
 
     Serial.print("Key Pressed : ");
     Serial.println(key);
-    switch (key)
+    if (key == '*')
     {
-      case 'B':
-        {
-          Serial.print("No. Pressed : ");
-          Serial.println(pressedNumber);
-
-
-          numString = String(pressedNumber);
-          Serial.println(numString.length());
-          
-          displayData(numString, 90, line);
-          numString = "";
-          pressedNumber = 0;
-          break;
-        }
-      case 'A':
-        {
-          //display.setCursor(90, line);
-          if (line != 50)
+      startFunctioning = !startFunctioning;
+      key = '0';
+    }
+    Serial.print("Start ? ");
+    Serial.println(startFunctioning);
+    if (!startFunctioning)
+    {
+      switch (key)
+      {
+        case 'B':
           {
-            line = line + 15;
-          }
-          else
-          {
-            line = 5;
-          }
-
-          numString = "";
-          pressedNumber = 0;
-          break;
-        }
-      case 'C':
-        {
-          //display.drawRect(80, 3, 20, 60, WHITE);
-          display.fillRect(80, 3, 35, 60, BLACK);
-          display.display();
-          delay(500);
-          initialValues();
-          line = 5;
-          break;
-        }
-      default :
-        {
-          number = number * 10 + (int)key;
-          number = number - 48;
-          pressedNumber = pressedNumber * 10 + number;
-          if((pressedNumber/10000) >= 1) //to truncate the last part of the numbers with more than 4 digit
-          {
-            Serial.print("Bef : ");
+            Serial.print("No. Pressed : ");
             Serial.println(pressedNumber);
-            pressedNumber = pressedNumber/10;
-            Serial.print("After : ");
-            Serial.println(pressedNumber);            
+
+
+            numString = String(pressedNumber);
+            Serial.println(numString.length());
+
+            displayData(numString, 90, line);
+            if (line == 5)
+            {
+              on_time = pressedNumber;
+            }
+            if (line == 20)
+            {
+              off_time = pressedNumber;
+            }
+            if (line == 35)
+            {
+              loop_count = pressedNumber;
+            }
+            if (line == 50)
+            {
+              current_loop = pressedNumber;
+            }
+
+
+            numString = "";
+            pressedNumber = 0;
+            break;
           }
-          number = 0;
-          break;
+        case 'A':
+          {
+            //display.setCursor(90, line);
+            if (line != 50)
+            {
+              line = line + 15;
+            }
+            else
+            {
+              line = 5;
+            }
+
+            numString = "";
+            pressedNumber = 0;
+            break;
+          }
+        case 'C':
+          {
+            //display.drawRect(80, 3, 20, 60, WHITE);
+            display.fillRect(80, 3, 35, 60, BLACK);
+            display.display();
+            delay(500);
+            initialValues();
+            line = 5;
+            break;
+          }
+        default :
+          {
+            number = number * 10 + (int)key;
+            number = number - 48;
+            pressedNumber = pressedNumber * 10 + number;
+            if ((pressedNumber / 10000) >= 1) //to truncate the last part of the numbers with more than 4 digit
+            {
+              Serial.print("Bef : ");
+              Serial.println(pressedNumber);
+              pressedNumber = pressedNumber / 10;
+              Serial.print("After : ");
+              Serial.println(pressedNumber);
+            }
+            number = 0;
+            break;
+          }
+      }
+    }
+    else
+    {
+      pressedNumber = 0;
+      numString = "";
+      Serial.print("ON : ");
+      Serial.println(on_time);
+      Serial.print("OFF : ");
+      Serial.println(off_time);
+      Serial.print("LOOP : ");
+      Serial.println(loop_count);
+      Serial.print("CURRENT : ");
+      Serial.println(current_loop);
+
+
+      while (counter <= loop_count)
+      {
+        if (millis() - lastMillis > on_time && pinState)
+        {
+          digitalWrite(RELAY_PIN, LOW);
+          digitalWrite(RELAY_ON_OFF_LED, LOW);
+          pinState = 0;
+          lastMillis = millis();
         }
+        else if (millis() - lastMillis > off_time && !pinState)
+        {
+          digitalWrite(RELAY_PIN, HIGH);
+          digitalWrite(RELAY_ON_OFF_LED, HIGH);
+          pinState = 1;
+          lastMillis = millis();
+          counterString = String(counter);
+          line = 50;
+          displayData(counterString, 90, 50);
+          counter ++;
+        }
+      }
+      display.fillRect(80, 3, 35, 60, BLACK);
+      initialValues();
     }
   }
-
 }
 
 

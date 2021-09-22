@@ -43,5 +43,21 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - Deleting specific area is working fine.
 - Will add * for starting and stopping the function
 
+#### 1.0.6 (code)
+- Added * to start the functioning of the system.
+- couldnt configure the stopping of the system with * since it was in a while loop.
+- need to change the 'line' in displayData func to 'y'. was creating issues in the 2nd line of UI.
+- some problem in the 2nd input in UI couldnt resolve.
+- added code to return to initial state after completetion.
+- need to add some LED indication with blue LED of completition and starting function.
+
+
+
+
+
+
+
+
+
 
 
