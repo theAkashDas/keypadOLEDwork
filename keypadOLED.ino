@@ -1,5 +1,6 @@
-//A is for start giving inputs
-//B is for going to the next line
+//A is for going to the next line
+//B is for viewing pressed number
+//
 //
 
 
@@ -33,7 +34,7 @@ byte colPins[COLS] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 long last = 0;
-uint16_t number = 0, pressedNumber = 0;
+uint16_t number = 0, pressedNumber = 0, loop_count = 0, current_loop = 0, on_time = 0, off_time = 0;
 uint8_t line = 5;
 String numString = "";
 
@@ -96,48 +97,8 @@ void setup()
 
 void loop() {
   //  display.clearDisplay();
-  if (millis() - last > 1000)
-  {
-    //    display.setCursor(90, 5);
-    //    display.print("0000");
-//    display.setCursor(90, 20);
-//    display.print("0000");
-//    display.setCursor(90, 35);
-//    display.print("0000");
-//    display.setCursor(90, 50);
-//    display.print("0000");
-//    display.display();
-    display.setTextColor(WHITE, BLACK);
-    display.display();
-    count++;
-    last = millis();
-  }
   char key = keypad.getKey();// Read the key
 
-  // Print if key pressed
-
-  //  if (key)
-  //  {
-  //    Serial.print("Key Pressed : ");
-  //    Serial.println(key);
-  //    if (key != 'B')
-  //    {
-  //      number = number * 10 + (int)key;
-  //      number = number - 48;
-  //      pressedNumber = pressedNumber * 10 + number;
-  //      number = 0;
-  //
-  //    }
-  //    else
-  //    {
-  //      Serial.print("No. Pressed : ");
-  //      Serial.println(pressedNumber);
-  //      numString = String(pressedNumber);
-  //      displayData(numString,90,5);
-  //      numString = "";
-  //      pressedNumber = 0;
-  //    }
-  //  }
   if (key)
   {
     Serial.print("Key Pressed : ");
@@ -145,39 +106,71 @@ void loop() {
     switch (key)
     {
       case 'B':
-      {
+        {
           Serial.print("No. Pressed : ");
           Serial.println(pressedNumber);
-          
-          
+
+
           numString = String(pressedNumber);
           Serial.println(numString.length());
           displayData(numString, 90, line);
           numString = "";
           pressedNumber = 0;
           break;
-      }
+        }
       case 'A':
-      {
-        //display.setCursor(90, line);
-        line = line + 15;
-        numString = "";
-        pressedNumber = 0;
-        break;
-      }
+        {
+          //display.setCursor(90, line);
+          if (line != 15)
+          {
+            line = line + 15;
+          }
+          else
+          {
+            line = 5;
+          }
+
+          numString = "";
+          pressedNumber = 0;
+          break;
+        }
+      case 'C':
+        {
+          //display.drawRect(80, 3, 20, 60, WHITE);
+          display.fillRect(80, 3, 35, 60, BLACK);
+          display.display();
+          delay(500);
+          display.setCursor(90, 5);
+          display.print("0000");
+          display.setCursor(90, 20);
+          display.print("0000");
+          display.setCursor(90, 35);
+          display.print("0000");
+          display.setCursor(90, 50);
+          display.print("0000");
+          display.display();
+          line = 5;
+          break;
+        }
       default :
-      {
+        {
           number = number * 10 + (int)key;
           number = number - 48;
           pressedNumber = pressedNumber * 10 + number;
           number = 0;
           break;
-      }
+        }
     }
   }
+
 }
+
+
 void displayData(String data, int x, int y)
 {
+  display.fillRect(80, (line - 2), 35, (line + 12), BLACK);
+  display.display();
+
   display.setTextSize(1);
   display.setTextColor(WHITE);
 
