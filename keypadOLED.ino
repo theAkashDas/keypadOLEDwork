@@ -12,7 +12,7 @@
 
 
 #define SCREEN_WIDTH              128 // OLED display width, in pixels
-#define SCREEN_HEIGHT             64 // OLED display height, in pixels
+#define SCREEN_HEIGHT             64  // OLED display height, in pixels
 #define KEY_LED                   10
 #define RELAY_ON_OFF_LED          12
 #define RELAY_PIN                 A0
@@ -58,11 +58,11 @@ void startupMessage()
   display.setCursor(64 - (splashString.length() * 6), 25);
   display.print(splashString);
   display.setTextSize(1);
-  splashString = "v1.0.8";
+  splashString = "v1.0.9";
   display.setCursor(64 - (splashString.length() * 3), 55);
   display.print(splashString);
   display.display();
-  delay(3000);
+  delay(2000);
 }
 
 void staticText()
@@ -110,6 +110,8 @@ void initialValues()
   loop_count = 0;
   current_loop = 0;
   startFunctioning = 0;
+  line = 5;
+  counter = 0;
 
   digitalWrite(RELAY_PIN, LOW);
   digitalWrite(RELAY_ON_OFF_LED, LOW);

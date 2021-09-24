@@ -63,6 +63,12 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - Added part for infinite loop if 0 is pressed as no. of loops.
 - if counter is greater than 9999 make it 0.
 
+#### 1.0.9 (code)
+- Startup msg will be shown for 2 secs.
+- Did few bugfixes.
+- Working smoothly.
+- Need to work on the input display.
+
 
 
 
