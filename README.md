@@ -1,9 +1,7 @@
 ### Keypad OLED Project
 Use case :- Keypad will be used to give inputs, OLED will be used to show those inputs. Inputs will be of the ON OFF period of a relay.
 
-
-<img src = "Extras/IMG_20210924_195256.jpg" width = "100"> 
-![](Extras/IMG_20210924_195256.jpg)
+<img src = "Extras/IMG_20210924_195256.jpg" width = "600"> 
 
 #### How to Use :-
 - A is for going to the next line
