@@ -1,7 +1,7 @@
 //A is for going to the next line
 //B is for viewing pressed number
 //C is for clear and reset
-//
+//* is used for starting the function.
 
 
 
@@ -57,6 +57,10 @@ void startupMessage()
   splashString = "the.A.D";
   display.setCursor(64 - (splashString.length() * 6), 25);
   display.print(splashString);
+  display.setTextSize(1);
+  splashString = "v1.0.8";
+  display.setCursor(64 - (splashString.length() * 3), 55);
+  display.print(splashString);
   display.display();
   delay(3000);
 }
@@ -92,8 +96,11 @@ void initialValues()
   display.print("0000");
   display.setCursor(90, 35);
   display.print("0000");
-  display.setCursor(90, 50);
-  display.print("0000");
+  if (!startFunctioning)
+  {
+    display.setCursor(90, 50);
+    display.print("0000");
+  }
   display.display();
   lastMillis = 0;
   numString = "";
@@ -102,6 +109,10 @@ void initialValues()
   off_time = 0;
   loop_count = 0;
   current_loop = 0;
+  startFunctioning = 0;
+
+  digitalWrite(RELAY_PIN, LOW);
+  digitalWrite(RELAY_ON_OFF_LED, LOW);
 }
 
 void pinSetup()
@@ -111,7 +122,7 @@ void pinSetup()
   pinMode(KEY_LED, OUTPUT);
   digitalWrite(KEY_LED, LOW);
   pinMode(RELAY_ON_OFF_LED, OUTPUT);
-  digitalWrite(RELAY_ON_OFF_LED, HIGH);
+  digitalWrite(RELAY_ON_OFF_LED, LOW);
 }
 
 
@@ -125,7 +136,7 @@ void setup()
     for (;;);
   }
 
-  //  startupMessage();
+  startupMessage();
 
   delay(1000);
   display.clearDisplay();
@@ -167,7 +178,7 @@ void loop() {
             numString = String(pressedNumber);
             Serial.println(numString.length());
             Serial.println(line);
-            
+
             displayData(numString, 90, line);
             if (line == 5)
             {
@@ -237,42 +248,64 @@ void loop() {
     }
     else
     {
-//      pressedNumber = 0;
-//      numString = "";
-//      Serial.print("ON : ");
-//      Serial.println(on_time);
-//      Serial.print("OFF : ");
-//      Serial.println(off_time);
-//      Serial.print("LOOP : ");
-//      Serial.println(loop_count);
-//      Serial.print("CURRENT : ");
-//      Serial.println(current_loop);
-
-
-      while (counter <= loop_count)
+      if (!loop_count)
       {
-        if (millis() - lastMillis > on_time && pinState)
+        while (true)
         {
-          digitalWrite(RELAY_PIN, LOW);
-          digitalWrite(RELAY_ON_OFF_LED, LOW);
-          pinState = 0;
-          lastMillis = millis();
-        }
-        else if (millis() - lastMillis > off_time && !pinState)
-        {
-          digitalWrite(RELAY_PIN, HIGH);
-          digitalWrite(RELAY_ON_OFF_LED, HIGH);
-          pinState = 1;
-          lastMillis = millis();
-          counterString = String(counter);
-          line = 50;
-          displayData(counterString, 90, 50);
-          counter ++;
+          if (counter > 9999)
+          {
+            counter = 0;
+          }
+          else
+          {
+            if (millis() - lastMillis > on_time && pinState)
+            {
+              digitalWrite(RELAY_PIN, LOW);
+              digitalWrite(RELAY_ON_OFF_LED, LOW);
+              pinState = 0;
+              lastMillis = millis();
+            }
+            else if (millis() - lastMillis > off_time && !pinState)
+            {
+              digitalWrite(RELAY_PIN, HIGH);
+              digitalWrite(RELAY_ON_OFF_LED, HIGH);
+              pinState = 1;
+              lastMillis = millis();
+              counterString = String(counter);
+              line = 50;
+              displayData(counterString, 90, 50);
+              counter ++;
+            }
+          }
         }
       }
-      delay(2000);
-      display.fillRect(80, 3, 35, 60, BLACK);
-      initialValues();
+      else
+      {
+        while (counter <= loop_count)
+        {
+          if (millis() - lastMillis > on_time && pinState)
+          {
+            digitalWrite(RELAY_PIN, LOW);
+            digitalWrite(RELAY_ON_OFF_LED, LOW);
+            pinState = 0;
+            lastMillis = millis();
+          }
+          else if (millis() - lastMillis > off_time && !pinState)
+          {
+            digitalWrite(RELAY_PIN, HIGH);
+            digitalWrite(RELAY_ON_OFF_LED, HIGH);
+            pinState = 1;
+            lastMillis = millis();
+            counterString = String(counter);
+            line = 50;
+            displayData(counterString, 90, 50);
+            counter ++;
+          }
+        }
+        delay(2000);
+        display.fillRect(80, 3, 35, 40, BLACK);
+        initialValues();
+      }
     }
   }
 }

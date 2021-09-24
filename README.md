@@ -1,7 +1,7 @@
 ### Keypad OLED Project
 Use case :- Keypad will be used to give inputs, OLED will be used to show those inputs. Inputs will be of the ON OFF period of a relay.
 
-<img src = "Extras/IMG_20210924_195256.jpg" width = "600"> 
+<img src = "Extras/IMG_20210924_195256.jpg" width = "500"> 
 
 #### How to Use :-
 - A is for going to the next line
@@ -55,6 +55,13 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 
 #### 1.0.7 (feature)
 - Trying adding image to the github repository.
+
+#### 1.0.8 (code)
+- Added code version in the startup text.
+- Added condition for the current loop not to show 0000 on completion of working.
+- Initial state of Relay Pin and Led pins are low.
+- Added part for infinite loop if 0 is pressed as no. of loops.
+- if counter is greater than 9999 make it 0.
 
 
 
