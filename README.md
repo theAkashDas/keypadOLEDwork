@@ -1,6 +1,8 @@
 ### Keypad OLED Project
 Use case :- Keypad will be used to give inputs, OLED will be used to show those inputs. Inputs will be of the ON OFF period of a relay.
 
+![alt text](https://github.com/theAkashDas/keypadOLEDwork.git/blob/master/IMG_20210924_195256.jpg?raw=true)
+
 #### How to Use :-
 - A is for going to the next line
 - B is for viewing pressed number
@@ -50,6 +52,9 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - some problem in the 2nd input in UI couldnt resolve.
 - added code to return to initial state after completetion.
 - need to add some LED indication with blue LED of completition and starting function.
+
+#### 1.0.7 (code)
+- Trying adding image to the github repository.
 
 
 

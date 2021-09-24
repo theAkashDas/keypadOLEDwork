@@ -60,6 +60,7 @@ void startupMessage()
   display.display();
   delay(3000);
 }
+
 void staticText()
 {
   loop_count = 0;
@@ -102,6 +103,7 @@ void initialValues()
   loop_count = 0;
   current_loop = 0;
 }
+
 void pinSetup()
 {
   pinMode(RELAY_PIN, OUTPUT);
@@ -111,6 +113,8 @@ void pinSetup()
   pinMode(RELAY_ON_OFF_LED, OUTPUT);
   digitalWrite(RELAY_ON_OFF_LED, HIGH);
 }
+
+
 void setup()
 {
   Serial.begin(115200);
@@ -162,21 +166,22 @@ void loop() {
 
             numString = String(pressedNumber);
             Serial.println(numString.length());
-
+            Serial.println(line);
+            
             displayData(numString, 90, line);
             if (line == 5)
             {
               on_time = pressedNumber;
             }
-            if (line == 20)
+            else if (line == 20)
             {
               off_time = pressedNumber;
             }
-            if (line == 35)
+            else if (line == 35)
             {
               loop_count = pressedNumber;
             }
-            if (line == 50)
+            else if (line == 50)
             {
               current_loop = pressedNumber;
             }
@@ -189,7 +194,7 @@ void loop() {
         case 'A':
           {
             //display.setCursor(90, line);
-            if (line != 50)
+            if (line < 35)
             {
               line = line + 15;
             }
@@ -232,16 +237,16 @@ void loop() {
     }
     else
     {
-      pressedNumber = 0;
-      numString = "";
-      Serial.print("ON : ");
-      Serial.println(on_time);
-      Serial.print("OFF : ");
-      Serial.println(off_time);
-      Serial.print("LOOP : ");
-      Serial.println(loop_count);
-      Serial.print("CURRENT : ");
-      Serial.println(current_loop);
+//      pressedNumber = 0;
+//      numString = "";
+//      Serial.print("ON : ");
+//      Serial.println(on_time);
+//      Serial.print("OFF : ");
+//      Serial.println(off_time);
+//      Serial.print("LOOP : ");
+//      Serial.println(loop_count);
+//      Serial.print("CURRENT : ");
+//      Serial.println(current_loop);
 
 
       while (counter <= loop_count)
@@ -265,6 +270,7 @@ void loop() {
           counter ++;
         }
       }
+      delay(2000);
       display.fillRect(80, 3, 35, 60, BLACK);
       initialValues();
     }
