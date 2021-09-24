@@ -7,9 +7,12 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - A is for going to the next line
 - B is for viewing pressed number
 - C is for clear and reset
+- * is used for starting function
 - RED LED for power
 - White LED for Relay ON OFF
 - Blue LED will blink when there is an input - used for input confirmation.
+
+<video src = "Extras/Video.mp4" width = "500">
 
 #### Conditions :- 
 - No. of digits should not exceed 4
