@@ -4,11 +4,12 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 <img src = "Extras/IMG_20210924_195256.jpg" width = "500"> 
 
 #### How to Use :-
-- A is for going to the next line
-- B is for viewing pressed number
-- C is for clear and reset
-- '*' is used for starting function
-- RED LED for power
+- A is setting ON time
+- B is for setting OFF time
+- C is for setting the loop
+- D is for done or set the inputs.
+- * is for starting the function.
+- # if for clear or reset.
 - White LED for Relay ON OFF
 - Blue LED will blink when there is an input - used for input confirmation.
 
@@ -71,6 +72,10 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - Did few bugfixes.
 - Working smoothly.
 - Need to work on the input display.
+
+#### 2.0.1 (code)
+- Made some new changes in code.
+- Changed the button sequence of input.
 
 
 
