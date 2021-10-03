@@ -78,6 +78,9 @@ Use case :- Keypad will be used to give inputs, OLED will be used to show those 
 - Changed the button sequence of input.
 
 
+- Need to add a push button for taking inputs for on off time in seconds or minutes.
+
+
 
 
 
